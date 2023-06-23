@@ -47,10 +47,14 @@ describe('Gilded Rose', () => {
   });
 
   it('item quality should never be more than 50', () => {
-    const gildedRose = new GildedRose([new Item('Aged Brie', -1, 50)]);
-    const [item] = gildedRose.updateQuality();
-    expect(item).toMatchObject({
+    const gildedRose = new GildedRose([new Item('Aged Brie', -1, 49), new Item('Backstage passes to a TAFKAL80ETC concert', 5, 49)]);
+    const [brie, passes] = gildedRose.updateQuality();
+    expect(brie).toMatchObject({
       sellIn: -2,
+      quality: 50
+    });
+    expect(passes).toMatchObject({
+      sellIn: 4,
       quality: 50
     });
   });
