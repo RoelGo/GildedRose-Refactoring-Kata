@@ -29,6 +29,15 @@ describe('Gilded Rose', () => {
   });
 
   it('aged brie quality should increase', () => {
+    const gildedRose = new GildedRose([new Item('Aged Brie', 1, 0)]);
+    const [item] = gildedRose.updateQuality();
+    expect(item).toMatchObject({
+      sellIn: 0,
+      quality: 1
+    });
+  });
+
+  it('aged brie quality should increase twice as fast when sell date has passes', () => {
     const gildedRose = new GildedRose([new Item('Aged Brie', -1, 0)]);
     const [item] = gildedRose.updateQuality();
     expect(item).toMatchObject({
