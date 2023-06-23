@@ -36,12 +36,12 @@ export class GildedRose {
         if (item.quality < MAX_QUALITY) {
           item.quality = item.quality + 1
           if (item.name == BACKSTAGE_PASSES) {
-            if (item.sellIn < 11) {
+            if (item.sellIn <= 10) {
               if (item.quality < MAX_QUALITY) {
                 item.quality = item.quality + 1
               }
             }
-            if (item.sellIn < 6) {
+            if (item.sellIn <= 5) {
               if (item.quality < MAX_QUALITY) {
                 item.quality = item.quality + 1
               }
@@ -61,7 +61,7 @@ export class GildedRose {
               }
             }
           } else {
-            item.quality = item.quality - item.quality
+            item.quality = 0
           }
         } else {
           if (item.quality < MAX_QUALITY) {
