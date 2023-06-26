@@ -26,36 +26,31 @@ export class GildedRose {
 
   updateQuality() {
     this.items.forEach(item => {
-      if (item.name == AGED_BRIE || item.name == BACKSTAGE_PASSES) {
+      if (item.name == AGED_BRIE) {
         this.increaseQuality(item);
-        if (item.name == BACKSTAGE_PASSES) {
-          if (item.sellIn <= 10) {
-            this.increaseQuality(item);
-          }
-          if (item.sellIn <= 5) {
-            this.increaseQuality(item);
-          }
+        if (item.sellIn < 0) {
+          this.increaseQuality(item)
         }
+      } else if (item.name == BACKSTAGE_PASSES) {
+        this.increaseQuality(item);
+        if (item.sellIn <= 10) {
+          this.increaseQuality(item);
+        }
+        if (item.sellIn <= 5) {
+          this.increaseQuality(item);
+        }
+        if (item.sellIn <= 0) {
+          item.quality = 0
+        }
+      } else if (item.name == SULFURAS) {
       } else {
-        if (item.name != SULFURAS) {
-          this.decreaseQuality(item);
+        this.decreaseQuality(item);
+        if (item.sellIn < 0) {
+          this.decreaseQuality(item)
         }
       }
       if (item.name != SULFURAS) {
         item.sellIn = item.sellIn - 1;
-      }
-      if (item.sellIn < 0) {
-        if (item.name == AGED_BRIE) {
-          this.increaseQuality(item)
-        } else {
-          if (item.name == BACKSTAGE_PASSES) {
-            item.quality = 0
-          } else {
-            if (item.name != SULFURAS) {
-              this.decreaseQuality(item)
-            }
-          }
-        }
       }
     });
 
