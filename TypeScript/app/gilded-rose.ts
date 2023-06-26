@@ -27,24 +27,18 @@ export class GildedRose {
   updateQuality() {
     this.items.forEach(item => {
       if (item.name == AGED_BRIE || item.name == BACKSTAGE_PASSES) {
-        if (item.quality < MAX_QUALITY) {
-          item.quality = item.quality + 1
-          if (item.name == BACKSTAGE_PASSES) {
-            if (item.sellIn <= 10) {
-              if (item.quality < MAX_QUALITY) {
-                item.quality = item.quality + 1
-              }
-            }
-            if (item.sellIn <= 5) {
-              if (item.quality < MAX_QUALITY) {
-                item.quality = item.quality + 1
-              }
-            }
+        this.increaseQuality(item);
+        if (item.name == BACKSTAGE_PASSES) {
+          if (item.sellIn <= 10) {
+            this.increaseQuality(item);
+          }
+          if (item.sellIn <= 5) {
+            this.increaseQuality(item);
           }
         }
       } else {
-        if (item.quality > MIN_QUALITY && item.name != SULFURAS) {
-          item.quality = item.quality - 1
+        if (item.name != SULFURAS) {
+          this.decreaseQuality(item);
         }
       }
       if (item.name != SULFURAS) {
@@ -52,17 +46,13 @@ export class GildedRose {
       }
       if (item.sellIn < 0) {
         if (item.name == AGED_BRIE) {
-          if (item.quality < MAX_QUALITY) {
-            item.quality = item.quality + 1
-          }
+          this.increaseQuality(item)
         } else {
           if (item.name == BACKSTAGE_PASSES) {
             item.quality = 0
           } else {
-            if (item.quality > MIN_QUALITY) {
-              if (item.name != SULFURAS) {
-                item.quality = item.quality - 1
-              }
+            if (item.name != SULFURAS) {
+              this.decreaseQuality(item)
             }
           }
         }
@@ -70,5 +60,17 @@ export class GildedRose {
     });
 
     return this.items;
+  }
+
+  private decreaseQuality(item: Item) {
+    if (item.quality > MIN_QUALITY) {
+      item.quality = item.quality - 1
+    }
+  }
+
+  private increaseQuality(item: Item) {
+    if (item.quality < MAX_QUALITY) {
+      item.quality = item.quality + 1
+    }
   }
 }
