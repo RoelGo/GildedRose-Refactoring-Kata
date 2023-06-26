@@ -68,7 +68,16 @@ describe('Gilded Rose', () => {
     });
   });
 
-  it('Backstage passes quality should increase by 2 when there ar 10 days or less', () => {
+  it('Backstage passes quality should increase', () => {
+    const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 15, 10)]);
+    const [item] = gildedRose.updateQuality();
+    expect(item).toMatchObject({
+      sellIn: 14,
+      quality: 11
+    });
+  });
+
+  it('Backstage passes quality should increase by 2 when there are 10 days or less', () => {
     const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 10, 10)]);
     const [item] = gildedRose.updateQuality();
     expect(item).toMatchObject({
@@ -77,7 +86,7 @@ describe('Gilded Rose', () => {
     });
   });
 
-  it('Backstage passes quality should increase by 3 when there ar 5 days or less', () => {
+  it('Backstage passes quality should increase by 3 when there are 5 days or less', () => {
     const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 5, 10)]);
     const [item] = gildedRose.updateQuality();
     expect(item).toMatchObject({
