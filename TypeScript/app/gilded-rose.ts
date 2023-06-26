@@ -40,44 +40,38 @@ export class GildedRose {
     return item.sellIn - 1;
   }
 
-  private calculateUpdatedQuality({name, quality, sellIn}: Item) {
+  private calculateUpdatedQuality(item: Item) {
+    const degradationRate = this.calculateDegradationRate(item);
+    return Math.max(Math.min(item.quality - degradationRate, MAX_QUALITY), MIN_QUALITY)
+  }
+
+  private calculateDegradationRate({name, quality, sellIn}: Item) {
+    let sellDateHasPassed = sellIn <= 0;
     if (name == AGED_BRIE) {
-      quality = this.increaseQuality(quality);
-      if (sellIn < 0) {
-        quality = this.increaseQuality(quality)
+      if (sellDateHasPassed) {
+        return -2
+      } else {
+        return -1
       }
     } else if (name == BACKSTAGE_PASSES) {
-      quality = this.increaseQuality(quality);
-      if (sellIn <= 10) {
-        quality = this.increaseQuality(quality);
+      if (sellDateHasPassed) {
+        return quality
       }
       if (sellIn <= 5) {
-        quality = this.increaseQuality(quality);
+        return -3
       }
-      if (sellIn <= 0) {
-        quality = 0
+      if (sellIn <= 10) {
+        return -2
       }
+      return -1
     } else if (name == SULFURAS) {
+      return 0
     } else {
-      quality = this.decreaseQuality(quality);
-      if (sellIn < 0) {
-        quality = this.decreaseQuality(quality)
+      if (sellDateHasPassed) {
+        return 2
+      } else {
+        return 1
       }
     }
-    return quality
-  }
-
-  private decreaseQuality(quality: number) {
-    if (quality > MIN_QUALITY) {
-      return quality - 1
-    }
-    return quality
-  }
-
-  private increaseQuality(quality: number) {
-    if (quality < MAX_QUALITY) {
-      return quality + 1
-    }
-    return quality
   }
 }
