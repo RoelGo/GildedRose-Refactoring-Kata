@@ -104,4 +104,17 @@ describe('Gilded Rose', () => {
     });
   });
 
+  it('conjured items quality should decrease twice as fast a normal items', () => {
+    const gildedRose = new GildedRose([new Item('Conjured Mana Cake', 1, 10), new Item('Conjured Mana Cake', 0, 10)]);
+    const [conjured1, conjured2] = gildedRose.updateQuality();
+    expect(conjured1).toMatchObject({
+      sellIn: 0,
+      quality: 8
+    });
+    expect(conjured2).toMatchObject({
+      sellIn: -1,
+      quality: 6
+    });
+  });
+
 });

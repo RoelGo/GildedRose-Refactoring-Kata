@@ -14,6 +14,7 @@ export class Item {
 const AGED_BRIE = 'Aged Brie';
 const BACKSTAGE_PASSES = 'Backstage passes to a TAFKAL80ETC concert';
 const SULFURAS = 'Sulfuras, Hand of Ragnaros';
+const CONJURED = 'Conjured Mana Cake';
 const MAX_QUALITY = 50;
 const MIN_QUALITY = 0;
 
@@ -66,7 +67,12 @@ export class GildedRose {
       return -1
     } else if (name == SULFURAS) {
       return 0
-    } else {
+    } else if (name === CONJURED) {
+      if (sellDateHasPassed) {
+        return 4
+      }
+      return 2
+    }else {
       if (sellDateHasPassed) {
         return 2
       } else {
