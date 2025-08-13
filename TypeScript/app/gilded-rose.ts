@@ -11,6 +11,20 @@ export class Item {
   }
 }
 
+class ItemContainer {
+  private readonly item: Item;
+
+  constructor(item: Item) {
+    this.item = item;
+  }
+
+  ageItem() {
+    this.item.quality = calculateUpdatedQuality(this.item);
+    this.item.sellIn = calculateItemSellIn(this.item);
+  }
+
+}
+
 const AGED_BRIE = 'Aged Brie';
 const BACKSTAGE_PASSES = 'Backstage passes to a TAFKAL80ETC concert';
 const SULFURAS = 'Sulfuras, Hand of Ragnaros';
@@ -25,10 +39,13 @@ export class GildedRose {
     this.items = items;
   }
 
+  getContainedItems(): Array<ItemContainer> {
+    return this.items.map(item => new ItemContainer(item));
+  }
+
   updateQuality() {
-    this.items.forEach(item => {
-      item.quality = calculateUpdatedQuality(item);
-      item.sellIn = calculateItemSellIn(item);
+    this.getContainedItems().forEach(container => {
+      container.ageItem()
     });
 
     return this.items;
