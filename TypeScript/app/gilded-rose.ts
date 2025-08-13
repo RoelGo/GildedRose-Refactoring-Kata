@@ -27,57 +27,59 @@ export class GildedRose {
 
   updateQuality() {
     this.items.forEach(item => {
-      item.quality = this.calculateUpdatedQuality(item);
-      item.sellIn = this.calculateItemSellIn(item);
+      item.quality = calculateUpdatedQuality(item);
+      item.sellIn = calculateItemSellIn(item);
     });
 
     return this.items;
   }
 
-  private calculateItemSellIn(item: Item) {
-    if (SULFURAS == item.name) {
-      return item.sellIn
-    }
-    return item.sellIn - 1;
-  }
+}
 
-  private calculateUpdatedQuality(item: Item) {
-    const degradationRate = this.calculateDegradationRate(item);
-    return Math.max(Math.min(item.quality - degradationRate, MAX_QUALITY), MIN_QUALITY)
+function calculateItemSellIn(item: Item) {
+  if (SULFURAS == item.name) {
+    return item.sellIn
   }
+  return item.sellIn - 1;
+}
 
-  private calculateDegradationRate({name, quality, sellIn}: Item) {
-    let sellDateHasPassed = sellIn <= 0;
-    if (name == AGED_BRIE) {
-      if (sellDateHasPassed) {
-        return -2
-      } else {
-        return -1
-      }
-    } else if (name == BACKSTAGE_PASSES) {
-      if (sellDateHasPassed) {
-        return quality
-      }
-      if (sellIn <= 5) {
-        return -3
-      }
-      if (sellIn <= 10) {
-        return -2
-      }
+function calculateUpdatedQuality(item: Item) {
+  const degradationRate = calculateDegradationRate(item);
+  return Math.max(Math.min(item.quality - degradationRate, MAX_QUALITY), MIN_QUALITY)
+}
+
+function calculateDegradationRate({name, quality, sellIn}: Item) {
+  let sellDateHasPassed = sellIn <= 0;
+  if (name == AGED_BRIE) {
+    if (sellDateHasPassed) {
+      return -2
+    } else {
       return -1
-    } else if (name == SULFURAS) {
-      return 0
-    } else if (name === CONJURED) {
-      if (sellDateHasPassed) {
-        return 4
-      }
+    }
+  } else if (name == BACKSTAGE_PASSES) {
+    if (sellDateHasPassed) {
+      return quality
+    }
+    if (sellIn <= 5) {
+      return -3
+    }
+    if (sellIn <= 10) {
+      return -2
+    }
+    return -1
+  } else if (name == SULFURAS) {
+    return 0
+  } else if (name === CONJURED) {
+    if (sellDateHasPassed) {
+      return 4
+    }
+    return 2
+  } else {
+    if (sellDateHasPassed) {
       return 2
-    }else {
-      if (sellDateHasPassed) {
-        return 2
-      } else {
-        return 1
-      }
+    } else {
+      return 1
     }
   }
 }
+
