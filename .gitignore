@@ -5,4 +5,7 @@ obj
 vendor
 .idea
 *.iml
-csharpcore/GildedRoseTests/ApprovalTest.ThirtyDays.received.txt
+**/*.received.*
+venv
+**/DS_Store/*
+**/.DS_Store/*
