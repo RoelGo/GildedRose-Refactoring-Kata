@@ -18,6 +18,14 @@ class ItemContainer {
     this.item = item;
   }
 
+  protected getItem() {
+    return this.item;
+  }
+
+  sellDateHasPassed() {
+    return this.item.sellIn <= 0;
+  }
+
   ageItem() {
     this.item.quality = this.calculateUpdatedQuality();
     this.item.sellIn = this.calculateItemSellIn();
@@ -33,8 +41,68 @@ class ItemContainer {
     return Math.max(Math.min(this.item.quality - degradationRate, MAX_QUALITY), MIN_QUALITY)
   }
 
-  private getDegradationRate() {
-    return calculateDegradationRate(this.item);
+  protected getDegradationRate(): number {
+    if (this.sellDateHasPassed()) {
+      return 2
+    } else {
+      return 1
+    }
+  }
+}
+
+abstract class SpecialContainer<T extends Pick<Item, "name">> extends ItemContainer {
+  constructor(item: Item & T) {
+    super(item);
+  }
+
+}
+
+type AgedBrie = { name: 'Aged Brie' };
+
+class AgedBrieContainer extends SpecialContainer<AgedBrie> {
+  protected override getDegradationRate() {
+    if (this.sellDateHasPassed()) {
+      return -2
+    } else {
+      return -1
+    }
+  }
+}
+
+type BackstagePasses = { name: 'Backstage passes to a TAFKAL80ETC concert' };
+
+class BackstagePassesContainer extends SpecialContainer<BackstagePasses> {
+  protected override getDegradationRate() {
+    const {quality, sellIn} = this.getItem();
+    if (super.sellDateHasPassed()) {
+      return quality
+    }
+    if (sellIn <= 5) {
+      return -3
+    }
+    if (sellIn <= 10) {
+      return -2
+    }
+    return -1
+  }
+}
+
+type Sulfuras = { name: 'Sulfuras, Hand of Ragnaros' };
+
+class SulfurasContainer extends SpecialContainer<Sulfuras> {
+  protected override getDegradationRate() {
+    return 0
+  }
+}
+
+type Conjured = { name: 'Conjured Mana Cake' };
+
+class ConjuredContainer extends SpecialContainer<Conjured> {
+  protected override getDegradationRate() {
+    if (this.sellDateHasPassed()) {
+      return 4
+    }
+    return 2
   }
 }
 
@@ -45,6 +113,35 @@ const CONJURED = 'Conjured Mana Cake';
 const MAX_QUALITY = 50;
 const MIN_QUALITY = 0;
 
+function isAgedBrie(item: Item): item is Item & AgedBrie {
+  return item.name === AGED_BRIE;
+}
+
+function isBackstagePasses(item: Item): item is Item & BackstagePasses {
+  return item.name === BACKSTAGE_PASSES;
+}
+
+function isSulfuras(item: Item): item is Item & Sulfuras {
+  return item.name === SULFURAS;
+}
+
+function isConjured(item: Item): item is Item & Conjured {
+  return item.name === CONJURED;
+}
+
+function putItemIntoContainer(item: Item): ItemContainer {
+  if (isAgedBrie(item)) {
+    return new AgedBrieContainer(item);
+  } else if (isBackstagePasses(item)) {
+    return new BackstagePassesContainer(item);
+  } else if (isSulfuras(item)) {
+    return new SulfurasContainer(item);
+  } else if (isConjured(item)) {
+    return new ConjuredContainer(item);
+  }
+  return new ItemContainer(item);
+}
+
 export class GildedRose {
   items: Array<Item>;
 
@@ -53,7 +150,7 @@ export class GildedRose {
   }
 
   getContainedItems(): Array<ItemContainer> {
-    return this.items.map(item => new ItemContainer(item));
+    return this.items.map(putItemIntoContainer);
   }
 
   updateQuality() {
@@ -65,39 +162,3 @@ export class GildedRose {
   }
 
 }
-
-function calculateDegradationRate({name, quality, sellIn}: Item) {
-  const sellDateHasPassed = sellIn <= 0;
-  if (name == AGED_BRIE) {
-    if (sellDateHasPassed) {
-      return -2
-    } else {
-      return -1
-    }
-  } else if (name == BACKSTAGE_PASSES) {
-    if (sellDateHasPassed) {
-      return quality
-    }
-    if (sellIn <= 5) {
-      return -3
-    }
-    if (sellIn <= 10) {
-      return -2
-    }
-    return -1
-  } else if (name == SULFURAS) {
-    return 0
-  } else if (name === CONJURED) {
-    if (sellDateHasPassed) {
-      return 4
-    }
-    return 2
-  } else {
-    if (sellDateHasPassed) {
-      return 2
-    } else {
-      return 1
-    }
-  }
-}
-
