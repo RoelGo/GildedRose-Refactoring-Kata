@@ -5,4 +5,8 @@ export abstract class SpecialContainer<T extends Pick<Item, "name">> extends Ite
   constructor(item: Item & T) {
     super(item);
   }
+
+  protected override calculateItemSellIn() {
+    return this.getItem().sellIn - 1;
+  }
 }

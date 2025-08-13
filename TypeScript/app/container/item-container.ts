@@ -1,6 +1,9 @@
 import {Item} from "@/gilded-rose";
 
-export class ItemContainer {
+const MAX_QUALITY = 50;
+const MIN_QUALITY = 0;
+
+export abstract class ItemContainer {
   private readonly item: Item;
 
   constructor(item: Item) {
@@ -11,17 +14,13 @@ export class ItemContainer {
     return this.item;
   }
 
-  sellDateHasPassed() {
+  protected sellDateHasPassed() {
     return this.item.sellIn <= 0;
   }
 
-  ageItem() {
+  public ageItem() {
     this.item.quality = this.calculateUpdatedQuality();
     this.item.sellIn = this.calculateItemSellIn();
-  }
-
-  protected calculateItemSellIn() {
-    return this.item.sellIn - 1;
   }
 
   private calculateUpdatedQuality() {
@@ -29,14 +28,6 @@ export class ItemContainer {
     return Math.max(Math.min(this.item.quality - degradationRate, MAX_QUALITY), MIN_QUALITY)
   }
 
-  protected getDegradationRate(): number {
-    if (this.sellDateHasPassed()) {
-      return 2
-    } else {
-      return 1
-    }
-  }
+  protected abstract calculateItemSellIn(): number
+  protected abstract getDegradationRate(): number
 }
-
-const MAX_QUALITY = 50;
-const MIN_QUALITY = 0;

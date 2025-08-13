@@ -8,7 +8,7 @@ export class SulfurasContainer extends SpecialContainer<Sulfuras> {
     return 0
   }
 
-  protected override calculateItemSellIn() {
+  protected override calculateItemSellIn(): number {
     return this.getItem().sellIn;
   }
 }

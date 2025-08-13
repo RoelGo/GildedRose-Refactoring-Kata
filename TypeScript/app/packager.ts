@@ -4,6 +4,7 @@ import {BackstagePassesContainer, isBackstagePasses} from "@/container/backstage
 import {isSulfuras, SulfurasContainer} from "@/container/sulfuras-container";
 import {ConjuredContainer, isConjured} from "@/container/conjured-container";
 import {Item} from "@/gilded-rose";
+import {RegularContainer} from "@/container/regular-container";
 
 export function packageItem(item: Item): ItemContainer {
   if (isAgedBrie(item)) {
@@ -15,5 +16,5 @@ export function packageItem(item: Item): ItemContainer {
   } else if (isConjured(item)) {
     return new ConjuredContainer(item);
   }
-  return new ItemContainer(item);
+  return new RegularContainer(item);
 }
