@@ -1,6 +1,12 @@
 import { Item, GildedRose } from '@/gilded-rose';
 
 describe('Gilded Rose', () => {
+  it('providing no constructor parameters should create an empty GildedRose', () => {
+    const gildedRose = new GildedRose();
+    expect(gildedRose.items).not.toBeUndefined();
+    expect(gildedRose.items).toHaveLength(0);
+  });
+
   it('item quality and sellIn should decrease at the end of each day', () => {
     const gildedRose = new GildedRose([new Item('Generic Item', 6, 5)]);
     const [item] = gildedRose.updateQuality();
