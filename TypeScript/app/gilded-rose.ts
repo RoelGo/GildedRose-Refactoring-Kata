@@ -19,10 +19,23 @@ class ItemContainer {
   }
 
   ageItem() {
-    this.item.quality = calculateUpdatedQuality(this.item);
-    this.item.sellIn = calculateItemSellIn(this.item);
+    this.item.quality = this.calculateUpdatedQuality();
+    this.item.sellIn = this.calculateItemSellIn();
   }
 
+  private calculateItemSellIn() {
+    const {sellIn, name} = this.item;
+    return SULFURAS == name ? sellIn : sellIn - 1;
+  }
+
+  private calculateUpdatedQuality() {
+    const degradationRate = this.getDegradationRate();
+    return Math.max(Math.min(this.item.quality - degradationRate, MAX_QUALITY), MIN_QUALITY)
+  }
+
+  private getDegradationRate() {
+    return calculateDegradationRate(this.item);
+  }
 }
 
 const AGED_BRIE = 'Aged Brie';
@@ -53,20 +66,8 @@ export class GildedRose {
 
 }
 
-function calculateItemSellIn(item: Item) {
-  if (SULFURAS == item.name) {
-    return item.sellIn
-  }
-  return item.sellIn - 1;
-}
-
-function calculateUpdatedQuality(item: Item) {
-  const degradationRate = calculateDegradationRate(item);
-  return Math.max(Math.min(item.quality - degradationRate, MAX_QUALITY), MIN_QUALITY)
-}
-
 function calculateDegradationRate({name, quality, sellIn}: Item) {
-  let sellDateHasPassed = sellIn <= 0;
+  const sellDateHasPassed = sellIn <= 0;
   if (name == AGED_BRIE) {
     if (sellDateHasPassed) {
       return -2
