@@ -31,9 +31,8 @@ class ItemContainer {
     this.item.sellIn = this.calculateItemSellIn();
   }
 
-  private calculateItemSellIn() {
-    const {sellIn, name} = this.item;
-    return SULFURAS == name ? sellIn : sellIn - 1;
+  protected calculateItemSellIn() {
+    return this.item.sellIn - 1;
   }
 
   private calculateUpdatedQuality() {
@@ -54,7 +53,6 @@ abstract class SpecialContainer<T extends Pick<Item, "name">> extends ItemContai
   constructor(item: Item & T) {
     super(item);
   }
-
 }
 
 type AgedBrie = { name: 'Aged Brie' };
@@ -92,6 +90,10 @@ type Sulfuras = { name: 'Sulfuras, Hand of Ragnaros' };
 class SulfurasContainer extends SpecialContainer<Sulfuras> {
   protected override getDegradationRate() {
     return 0
+  }
+
+  protected override calculateItemSellIn() {
+    return this.getItem().sellIn;
   }
 }
 
@@ -153,7 +155,7 @@ export class GildedRose {
     return this.items.map(putItemIntoContainer);
   }
 
-  updateQuality() {
+  updateQuality(): Array<Item> {
     this.getContainedItems().forEach(container => {
       container.ageItem()
     });
